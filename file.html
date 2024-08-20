@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stopwatch with Lap Times</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f0f0f0;
+		}
+		.stopwatch {
+			text-align: center;
+			margin-top: 50px;
+			background-color: #fff;
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		.time {
+			font-size: 48px;
+			margin-bottom: 20px;
+			color: #333;
+		}
+		.lap-times {
+			margin-top: 20px;
+            padding: 10px;
+			background-color: #f7f7f7;
+			border: 1px solid #ccc;
+			border-radius: 10px;
+		}
+		button {
+			margin: 10px;
+			padding: 10px;
+			font-size: 24px;
+			cursor: pointer;
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 10px;
+		}
+		button:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+<body>
+	<div class="stopwatch">
+		<div class="time">00:00:00</div>
+		<button id="start">Start</button>
+		<button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+		<button id="lap">Lap</button>
+		<div class="lap-times"></div>
+	</div>
+	<script>
+		let seconds = 0;
+		let minutes = 0;
+		let hours = 0;
+		let interval;
+		let running = false;
+		let lapTimes = [];
+		
+		document.getElementById('start').addEventListener('click', () => {
+			if (!running) {
+				interval = setInterval(() => {
+					seconds++;
+					if (seconds >= 60) {
+						seconds = 0;
+						minutes++;
+						if (minutes >= 60) {
+							minutes = 0;
+                            hours++;
+						}
+					}
+					document.querySelector('.time').textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+				}, 1000);
+				running = true;
+			}
+		});
+		
+		document.getElementById('stop').addEventListener('click', () => {
+			clearInterval(interval);
+			running = false;
+		});
+		
+		document.getElementById('reset').addEventListener('click', () => {
+			clearInterval(interval);
+			running = false;
+			seconds = 0;
+			minutes = 0;
+			hours = 0;
+			lapTimes = [];
+			document.querySelector('.time').
+            textContent = '00:00:00';
+			document.querySelector('.lap-times').innerHTML = '';
+		});
+		
+		document.getElementById('lap').addEventListener('click', () => {
+			if (running) {
+				lapTimes.push(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+				document.querySelector('.lap-times').innerHTML += `<div>${lapTimes[lapTimes.length - 1]}</div>`;
+			}
+		});
+		
+		function pad(number) {
+			return (number < 10 ? '0' : '') + number;
+		}
+	</script>
+</body>
+</html>
